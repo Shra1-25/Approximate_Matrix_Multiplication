@@ -37,7 +37,7 @@ public:
         M = D/C;
         thresholds = new double[C * NUM_NODES]; // C x NUM_NODES
         indices = new int[C * NUM_LEVELS]; // C x NUM_LEVELS
-        prototypes = new double[C * NUM_LEAVES * M]; // C x NUM_LEAVES x C
+        prototypes = new double[C * NUM_LEAVES * M]; // C x NUM_LEAVES x D/C
     }
 
     void fit(double* A_train, int N) {

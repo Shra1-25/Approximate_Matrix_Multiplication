@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
         
         double* output_cpu = new double[N_test * R];
         for(int i =0;i<N_test * R;i++)
-        output_cpu[i] = 0;
+            output_cpu[i] = 0;
         for(int i = 0; i < NUM_RUNS; i++) {
             timer.tic();
             // t->predict_cpu(A_test, N_test, output_cpu);
@@ -118,7 +118,7 @@ int main(int argc, char** argv) {
 
         double* output = new double[N_test * R];
         for(int i =0;i<N_test * R;i++)
-        output[i] = 0;
+            output[i] = 0;
         for(int i = 0; i < NUM_RUNS; i++) {
             timer.tic();
             t->predict(A_test, N_test, output);
