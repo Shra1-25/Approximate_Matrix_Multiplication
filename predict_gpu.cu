@@ -80,10 +80,6 @@ __global__ void predict_gpu_shared_opt(double* deviceMatrix,int N_test ,int D, i
     // precomputed_products: C x NUM_LEAVES x R = 8*16*R => optimized: 16*R
     //      max: 15*(128)*sizeof(double) = 16*2^7*2^3 bytes = 16*2^10B = 16KB => shared memory???
     // updated deviceMatrix = N_test x C(8) x NUM_LEVELS(4)	=> [2000, 1024000]*32*sizeof(float)
-    // output = N_test x R = num_blocks x block_size
-    // D in [256, 4096]
-    // R in [16, 128] => R<D
-    // N_test in [2000, 204800]
 
     int subspace = c;
     int row = blockIdx.x;	// every example goes in a different block. Shared memory will be for only 1 sample
@@ -97,7 +93,7 @@ __global__ void predict_gpu_shared_opt(double* deviceMatrix,int N_test ,int D, i
 
     int cur_index = 0;
     for(int i =0;i< NUM_LEVELS-1;i++){
-        int b = deviceMatrix[i + row*(NUM_LEVELS) ] >= thresholds_s[cur_index];
+        int b = deviceMatrix[subspace*NUM_LEVELS+ i + row*(8*NUM_LEVELS)] >= thresholds_s[cur_index];
         cur_index = 2*cur_index + 1 + b;
     }
     double thread_data = precomputed_products[subspace*NUM_LEAVES*num_cols + cur_index*num_cols + col];   
