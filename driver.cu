@@ -137,20 +137,19 @@ int main(int argc, char** argv) {
         cudaMemset(device_output, 0, N_test*R*sizeof(double));
 
         double* A_test_row_major = new double[ N_test*D];
-        double* A_test_double_transpose = new double[N_test*D];
-	
+        convert_to_row_major(A_test, A_test_row_major, N_test, D);
+
 	double* selcted_A_test_row_major = new double[N_test * C * NUM_LEVELS]; // C x NUM_LEVELS	
 	for(int c=0; c<C;c++){
 		for(int i=0; i<NUM_LEVELS-1; i++){
 			for(int eg_idx=0; eg_idx<N_test; eg_idx++){
-				selcted_A_test_row_major[c*NUM_LEVELS+i+eg_idx*NUM_LEVELS*C] = A_test[t->indices[c*NUM_LEVELS+i] + eg_idx*D];
+				selcted_A_test_row_major[c*NUM_LEVELS+i+eg_idx*NUM_LEVELS*C] = A_test_row_major[t->indices[c*NUM_LEVELS+i] + eg_idx*D];
 			}
 		}
 	}
 	
-        convert_to_row_major(A_test, A_test_row_major, N_test, D);
-        cudaMemcpy((void*)device_matrix, (void*)A_test_row_major, N_test*D* sizeof(double) ,cudaMemcpyHostToDevice);
-//        cudaMemcpy((void*)device_matrix, (void*)selcted_A_test_row_major, N_test*C*NUM_LEVELS* sizeof(double) ,cudaMemcpyHostToDevice);
+//        cudaMemcpy((void*)device_matrix, (void*)A_test_row_major, N_test*D* sizeof(double) ,cudaMemcpyHostToDevice);
+        cudaMemcpy((void*)device_matrix, (void*)selcted_A_test_row_major, N_test*C*NUM_LEVELS* sizeof(double) ,cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_products, (void*)t->products,C*NUM_LEAVES*R *sizeof(double),cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_indices, (void*)t->indices, C*NUM_LEVELS* sizeof(int),cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_thresholds, (void*)t->thresholds,C*NUM_NODES* sizeof(double),cudaMemcpyHostToDevice);
