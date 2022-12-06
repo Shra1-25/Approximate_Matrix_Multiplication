@@ -110,7 +110,6 @@ int main(int argc, char** argv) {
             omp_time += timer.toc();
         }
 
-
         double* output = new double[N_test * R];
         for(int i =0;i<N_test * R;i++)
             output[i] = 0;
@@ -177,6 +176,16 @@ int main(int argc, char** argv) {
         printf("%10lf\t", omp_time/NUM_RUNS);
         printf("%10lf\t", serial_time / omp_time);
         printf("%10e\n", max_err);
+        cudaFree(device_matrix);
+        cudaFree(device_products);
+        cudaFree(device_indices);
+        cudaFree(device_thresholds);
+        cudaFree(device_output);
+        free(A_test);
+        free(A_test_row_major);
+        free(output);
+        free(selcted_A_test_row_major);
+        free(host_result);
     }
 
 }
