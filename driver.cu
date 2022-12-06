@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
         for(int i =0;i< NUM_RUNS;i++){
             cudaMemset(device_output, 0, N_test*R*sizeof(double));
             for(int c = 0;c<C;c++){
-                predict_gpu_shared_opt<<<dimGrid, dimBlock>>>(device_matrix, N_test, D, R, D/C, device_products, device_indices, device_thresholds, device_output, c);
+                predict_gpu_opt<<<dimGrid, dimBlock>>>(device_matrix, N_test, D, R, D/C, device_products, device_indices, device_thresholds, device_output, c);
                 cudaDeviceSynchronize();
             }
             cudaEventRecord (stop, 0);
