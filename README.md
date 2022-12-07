@@ -5,7 +5,7 @@ This repository implements the MADDNESS algorithm described [here](https://arxiv
 ## Running Experiments
 
 - Checkout the ```master``` branch
-- ```./run_experiments.sh``` will report the runtime for varying N, D, and R as before. Results can be found in the directory ```gpu_results```
+- ```./run_experiments.sh``` will report the runtime for varying N, D, and R. Results can be found in the directory ```gpu_results```
 
 ## Overview of our Implementation
 
