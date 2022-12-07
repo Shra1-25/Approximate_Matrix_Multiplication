@@ -1,6 +1,6 @@
 # Parallel Approximate Matrix Multiplication
 
-This repository implements the MADDNESS algorithm described [here](https://arxiv.org/abs/2106.10860) as part of the course _CSCI-GA 3033 GPUs: Architecture and Programming course at NYU. We provide a serial version of the regression tree learning algorithm and serial, and CUDA (optimized) parallelized versions of the inference algorithm as described in the paper.
+This repository implements the MADDNESS algorithm described [here](https://arxiv.org/abs/2106.10860) as part of the course CSCI-GA 3033 GPUs: Architecture and Programming course at NYU. We provide a serial version of the regression tree learning algorithm and serial, and CUDA (optimized) parallelized versions of the inference algorithm as described in the paper.
 
 ## Running Experiments
 
