@@ -4,15 +4,6 @@ This repository implements the MADDNESS algorithm described [here](https://arxiv
 
 ## Running Experiments
 
-Different branches are used to run experiments on CPU and GPU. Both use the same serial implementation as the baseline. Here is how one can reproduce the experiments:
-
-### OpenMP Inference
-
-- Checkout the ```optimize-omp-inference``` branch
-- ```./run_experiments.sh``` will report the runtime and the numerical error for varying N (number of rows in A), D (width of A == number of rows in B), and R (width of B) across 4, 8, 16, 32, and 64 threads. Results can be found in corresponding ```.txt``` files in the directory ```omp_results```
-
-### CUDA Inference
-
 - Checkout the ```master``` branch
 - ```./run_experiments.sh``` will report the runtime for varying N, D, and R as before. Results can be found in the directory ```gpu_results```
 
