@@ -41,6 +41,16 @@ int main(int argc, char** argv) {
     
     int nthreads = 1;
 
+    struct cudaDeviceProp * prop = (cudaDeviceProp*) malloc(sizeof(cudaDeviceProp));
+    int device;
+    cudaGetDeviceCount(&device);
+    cudaGetDeviceProperties(prop, device-1);
+    cerr<<"lol"<<endl;
+    cerr<<prop->maxThreadsDim[0]<<endl;
+    cerr<<prop->maxThreadsDim[1]<<endl;
+    cerr<<prop->maxThreadsDim[2]<<endl;
+    cerr<<prop->maxThreadsPerBlock<<endl;
+
     // handle arguments with getopt
     char *spec = NULL;
     int index;
@@ -127,12 +137,22 @@ int main(int argc, char** argv) {
         cudaEventCreate (&stop);
         double* device_matrix, *device_products,  *device_thresholds, *device_output;
         int *device_indices;
-//        cudaMalloc( (void**)&device_matrix, N_test*D* sizeof(double));
-        cudaMalloc( (void**)&device_matrix, N_test*C*NUM_LEVELS* sizeof(double));
-        cudaMalloc( (void**)&device_products, C*NUM_LEAVES*R* sizeof(double));
-        cudaMalloc( (void**)&device_indices, C*NUM_LEVELS* sizeof(int));
-        cudaMalloc( (void**)&device_thresholds, C*NUM_NODES* sizeof(double));
-        cudaMalloc( (void**)&device_output, N_test*R*sizeof(double));
+        int x = cudaMalloc( (void**)&device_matrix, N_test*D* sizeof(double));
+//        int x = cudaMalloc( (void**)&device_matrix, N_test*C*NUM_LEVELS* sizeof(double));
+        if(x)
+           cerr<<x<<endl;
+        x = cudaMalloc( (void**)&device_products, C*NUM_LEAVES*R* sizeof(double));
+        if(x)
+           cerr<<x<<endl;
+        x = cudaMalloc( (void**)&device_indices, C*NUM_LEVELS* sizeof(int));
+        if(x)
+           cerr<<x<<endl;
+        x = cudaMalloc( (void**)&device_thresholds, C*NUM_NODES* sizeof(double));
+        if(x)
+           cerr<<x<<endl;
+        x = cudaMalloc( (void**)&device_output, N_test*R*sizeof(double));
+        if(x)
+           cerr<<x<<endl;
         cudaMemset(device_output, 0, N_test*R*sizeof(double));
 
         double* A_test_row_major = new double[ N_test*D];
@@ -147,8 +167,8 @@ int main(int argc, char** argv) {
 		}
 	}
 	
-//        cudaMemcpy((void*)device_matrix, (void*)A_test_row_major, N_test*D* sizeof(double) ,cudaMemcpyHostToDevice);
-        cudaMemcpy((void*)device_matrix, (void*)selcted_A_test_row_major, N_test*C*NUM_LEVELS* sizeof(double) ,cudaMemcpyHostToDevice);
+        cudaMemcpy((void*)device_matrix, (void*)A_test_row_major, N_test*D* sizeof(double) ,cudaMemcpyHostToDevice);
+//        cudaMemcpy((void*)device_matrix, (void*)selcted_A_test_row_major, N_test*C*NUM_LEVELS* sizeof(double) ,cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_products, (void*)t->products,C*NUM_LEAVES*R *sizeof(double),cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_indices, (void*)t->indices, C*NUM_LEVELS* sizeof(int),cudaMemcpyHostToDevice);
         cudaMemcpy((void*)device_thresholds, (void*)t->thresholds,C*NUM_NODES* sizeof(double),cudaMemcpyHostToDevice);
@@ -159,7 +179,7 @@ int main(int argc, char** argv) {
         for(int i =0;i< NUM_RUNS;i++){
             cudaMemset(device_output, 0, N_test*R*sizeof(double));
             for(int c = 0;c<C;c++){
-                predict_gpu_opt<<<dimGrid, dimBlock>>>(device_matrix, N_test, D, R, D/C, device_products, device_indices, device_thresholds, device_output, c);
+                predict_gpu_shared<<<dimGrid, dimBlock>>>(device_matrix, N_test, D, R, D/C, device_products, device_indices, device_thresholds, device_output, c);
                 cudaDeviceSynchronize();
             }
             cudaEventRecord (stop, 0);
